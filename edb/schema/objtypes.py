@@ -140,8 +140,50 @@ class ObjectType(
     def is_union_type(self, schema: s_schema.Schema) -> bool:
         return bool(self.get_union_of(schema))
 
+    def get_flat_union_components(
+        self,
+        schema: s_schema.Schema,
+    ) -> set[ObjectType]:
+        """If this is a union type, return its components.
+
+        Unlike get_union_of() the returned elements are guaranteed
+        to not be union types, i.e. this method flattens the tree.
+        """
+        candidates = list(self.get_union_of(schema).objects(schema))
+        components = set()
+        while candidates:
+            component = candidates.pop()
+            sub_candidates = component.get_union_of(schema)
+            if not sub_candidates:
+                components.add(component)
+            else:
+                candidates.extend(sub_candidates.objects(schema))
+
+        return components
+
     def is_intersection_type(self, schema: s_schema.Schema) -> bool:
         return bool(self.get_intersection_of(schema))
+
+    def get_flat_intersection_components(
+        self,
+        schema: s_schema.Schema,
+    ) -> set[ObjectType]:
+        """If this is an intersection type, return its components.
+
+        Unlike get_intersection_of() the returned elements are guaranteed
+        to not be intersection types, i.e. this method flattens the tree.
+        """
+        candidates = list(self.get_intersection_of(schema).objects(schema))
+        components = set()
+        while candidates:
+            component = candidates.pop()
+            sub_candidates = component.get_intersection_of(schema)
+            if not sub_candidates:
+                components.add(component)
+            else:
+                candidates.extend(sub_candidates.objects(schema))
+
+        return components
 
     def is_compound_type(self, schema: s_schema.Schema) -> bool:
         return self.is_union_type(schema) or self.is_intersection_type(schema)

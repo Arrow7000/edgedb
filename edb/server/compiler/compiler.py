@@ -100,7 +100,7 @@ class CompileContext:
     state: dbstate.CompilerConnectionState
     output_format: enums.OutputFormat
     expected_cardinality_one: bool
-    protocol_version: Tuple[int, int]
+    protocol_version: defines.ProtocolVersion
     skip_first: bool = False
     expect_rollback: bool = False
     json_parameters: bool = False
@@ -258,7 +258,7 @@ def new_compiler_context(
     output_format: enums.OutputFormat = enums.OutputFormat.BINARY,
     bootstrap_mode: bool = False,
     internal_schema_mode: bool = False,
-    protocol_version: Tuple[int, int] = defines.CURRENT_PROTOCOL,
+    protocol_version: defines.ProtocolVersion = defines.CURRENT_PROTOCOL,
 ) -> CompileContext:
     """Create and return an ad-hoc compiler context."""
 
@@ -383,7 +383,8 @@ class Compiler:
 
     @staticmethod
     def try_compile_rollback(
-        eql: Union[edgeql.Source, bytes], protocol_version: tuple[int, int]
+        eql: Union[edgeql.Source, bytes],
+        protocol_version: defines.ProtocolVersion,
     ):
         if isinstance(eql, edgeql.Source):
             source = eql
@@ -432,7 +433,7 @@ class Compiler:
         database_config: Mapping[str, config.SettingValue],
         system_config: Mapping[str, config.SettingValue],
         queries: List[str],
-        protocol_version: Tuple[int, int],
+        protocol_version: defines.ProtocolVersion,
         implicit_limit: int = 0,
     ) -> List[dbstate.QueryUnit]:
 
@@ -693,7 +694,7 @@ class Compiler:
         inline_typeids: bool,
         inline_typenames: bool,
         skip_first: bool,
-        protocol_version: Tuple[int, int],
+        protocol_version: defines.ProtocolVersion,
         inline_objectids: bool = True,
         json_parameters: bool = False,
     ) -> Tuple[dbstate.QueryUnitGroup,
@@ -762,7 +763,7 @@ class Compiler:
         inline_typeids: bool,
         inline_typenames: bool,
         skip_first: bool,
-        protocol_version: Tuple[int, int],
+        protocol_version: defines.ProtocolVersion,
         inline_objectids: bool = True,
         json_parameters: bool = False,
         expect_rollback: bool = False,
@@ -803,7 +804,7 @@ class Compiler:
         user_schema: s_schema.Schema,
         global_schema: s_schema.Schema,
         database_config: immutables.Map[str, config.SettingValue],
-        protocol_version: Tuple[int, int],
+        protocol_version: defines.ProtocolVersion,
     ) -> DumpDescriptor:
         schema = s_schema.ChainedSchema(
             self.state.std_schema,
@@ -875,7 +876,7 @@ class Compiler:
         schema_ddl: bytes,
         schema_ids: List[Tuple[str, str, bytes]],
         blocks: List[Tuple[bytes, bytes]],  # type_id, typespec
-        protocol_version: Tuple[int, int],
+        protocol_version: defines.ProtocolVersion,
     ) -> RestoreDescriptor:
         schema_object_ids = {
             (
@@ -2341,7 +2342,7 @@ def _extract_params(
 def _describe_object(
     schema: s_schema.Schema,
     source: s_obj.Object,
-    protocol_version: Tuple[int, int],
+    protocol_version: defines.ProtocolVersion,
 ) -> List[DumpBlockDescriptor]:
 
     cols = []

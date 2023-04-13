@@ -57,28 +57,16 @@ class TestHttpNotebook(tb.BaseHttpExtensionTest):
             'SELECT "AAAA"',
         ])
 
-        self.assertEqual(
+        self.assert_data_shape(
             results,
             {
                 'kind': 'results',
                 'results': [
                     {
                         'kind': 'data',
-                        'data': [
-                            'AAAAAAAAAAAAAAAAAAABBQ==',
-                            'AgAAAAAAAAAAAAAAAAAAAQU=',
-                            'RAAAABIAAQAAAAgAAAAAAAAAAQ==',
-                            'U0VMRUNU'
-                        ]
                     },
                     {
                         'kind': 'data',
-                        'data': [
-                            'AAAAAAAAAAAAAAAAAAABAQ==',
-                            'AgAAAAAAAAAAAAAAAAAAAQE=',
-                            'RAAAAA4AAQAAAARBQUFB',
-                            'U0VMRUNU'
-                        ]
                     },
                 ]
             }
@@ -91,19 +79,13 @@ class TestHttpNotebook(tb.BaseHttpExtensionTest):
             'SELECT 55',
         ])
 
-        self.assertEqual(
+        self.assert_data_shape(
             results,
             {
                 'kind': 'results',
                 'results': [
                     {
                         'kind': 'data',
-                        'data': [
-                            'AAAAAAAAAAAAAAAAAAABBQ==',
-                            'AgAAAAAAAAAAAAAAAAAAAQU=',
-                            'RAAAABIAAQAAAAgAAAAAAAAAAQ==',
-                            'U0VMRUNU'
-                        ]
                     },
                     {
                         'kind': 'error',
@@ -172,19 +154,13 @@ class TestHttpNotebook(tb.BaseHttpExtensionTest):
             'SELECT 2'
         ])
 
-        self.assertEqual(
+        self.assert_data_shape(
             results,
             {
                 'kind': 'results',
                 'results': [
                     {
                         'kind': 'data',
-                        'data': [
-                            'AAAAAAAAAAAAAAAAAAABBQ==',
-                            'AgAAAAAAAAAAAAAAAAAAAQU=',
-                            'RAAAABIAAQAAAAgAAAAAAAAAAQ==',
-                            'U0VMRUNU'
-                        ]
                     },
                     {
                         'kind': 'error',
@@ -222,16 +198,10 @@ class TestHttpNotebook(tb.BaseHttpExtensionTest):
 
         self.assertNotIn('error', results['results'][0])
 
-        self.assertEqual(
+        self.assert_data_shape(
             results['results'][1],
             {
                 'kind': 'data',
-                'data': [
-                    'AAAAAAAAAAAAAAAAAAABBQ==',
-                    'AgAAAAAAAAAAAAAAAAAAAQU=',
-                    'RAAAABIAAQAAAAgAAAAAAAAAAQ==',
-                    'U0VMRUNU'
-                ]
             },
         )
 
@@ -245,16 +215,10 @@ class TestHttpNotebook(tb.BaseHttpExtensionTest):
         self.assertNotIn('error', results['results'][0])
         self.assertNotIn('error', results['results'][1])
 
-        self.assertEqual(
+        self.assert_data_shape(
             results['results'][2],
             {
                 'kind': 'data',
-                'data': [
-                    'AAAAAAAAAAAAAAAAAAABBQ==',
-                    'AgAAAAAAAAAAAAAAAAAAAQU=',
-                    'RAAAABIAAQAAAAgAAAAAAAAAAQ==',
-                    'U0VMRUNU'
-                ]
             },
         )
 

@@ -1392,7 +1392,8 @@ async def _compile_sys_queries(
             output_format=edbcompiler.OutputFormat.BINARY,
             bootstrap_mode=True,
         ),
-        source=edgeql.Source.from_string(report_configs_query)).units
+        source=edgeql.Source.from_string(report_configs_query),
+    ).units
     assert len(units) == 1 and len(units[0].sql) == 1
 
     report_configs_typedesc = units[0].out_type_id + units[0].out_type_data
@@ -1406,7 +1407,28 @@ async def _compile_sys_queries(
 
     await _store_static_bin_cache(
         ctx,
-        'report_configs_typedesc',
+        'report_configs_typedesc_2_0',
+        report_configs_typedesc,
+    )
+
+    units = edbcompiler.compile(
+        ctx=edbcompiler.new_compiler_context(
+            compiler_state=compiler.state,
+            user_schema=schema,
+            expected_cardinality_one=True,
+            json_parameters=False,
+            output_format=edbcompiler.OutputFormat.BINARY,
+            bootstrap_mode=True,
+            protocol_version=(1, 0),
+        ),
+        source=edgeql.Source.from_string(report_configs_query),
+    ).units
+    assert len(units) == 1 and len(units[0].sql) == 1
+    report_configs_typedesc = units[0].out_type_id + units[0].out_type_data
+
+    await _store_static_bin_cache(
+        ctx,
+        'report_configs_typedesc_1_0',
         report_configs_typedesc,
     )
 

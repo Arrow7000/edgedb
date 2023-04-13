@@ -4,6 +4,12 @@
 Type descriptors
 ================
 
+.. note::
+
+  This page describes the type descriptor formats as implemented in protocol
+  version 2.0 (EdgeDB 4.0 and later).  See :ref:`ref_proto_typedesc_1_0` for
+  type descriptor implementation in protocol versino 1.0 and earlier.
+
 This section describes how type information for query input and results
 is encoded.  Specifically, this is needed to decode the server response to
 the :ref:`ref_protocol_msg_command_data_description` message.
@@ -81,13 +87,6 @@ Scalar Type Descriptor
         // Whether the type is defined in the schema
         // or is ephemeral.
         bool    schema_defined;
-
-        // Whether this type is a fundamental type.
-        bool    is_fundamental;
-
-        // Index of fundamental base scalar type
-        // if this is not a fundamental type itself.
-        uint16  fundamental_type;
 
         // Number of ancestor scalar types.
         uint16  ancestors_count;
@@ -187,6 +186,13 @@ Tuple Type Descriptor
         // or is ephemeral.
         bool      schema_defined;
 
+        // Number of ancestor scalar types.
+        uint16    ancestors_count;
+
+        // Indexes of ancestor scalar type descriptors
+        // in ancestor resolution order (C3).
+        uint16    ancestors[ancestors_count];
+
         // The number of elements in tuple.
         uint16    element_count;
 
@@ -217,6 +223,13 @@ Named Tuple Type Descriptor
         // Whether the type is defined in the schema
         // or is ephemeral.
         bool          schema_defined;
+
+        // Number of ancestor scalar types.
+        uint16        ancestors_count;
+
+        // Indexes of ancestor scalar type descriptors
+        // in ancestor resolution order (C3).
+        uint16        ancestors[ancestors_count];
 
         // The number of elements in tuple.
         uint16        element_count;
@@ -254,6 +267,13 @@ Array Type Descriptor
         // or is ephemeral.
         bool    schema_defined;
 
+        // Number of ancestor scalar types.
+        uint16  ancestors_count;
+
+        // Indexes of ancestor scalar type descriptors
+        // in ancestor resolution order (C3).
+        uint16  ancestors[ancestors_count];
+
         // Array element type.
         uint16  type;
 
@@ -286,6 +306,13 @@ Enumeration Type Descriptor
         // or is ephemeral.
         bool    schema_defined;
 
+        // Number of ancestor scalar types.
+        uint16  ancestors_count;
+
+        // Indexes of ancestor scalar type descriptors
+        // in ancestor resolution order (C3).
+        uint16  ancestors[ancestors_count];
+
         // The number of enumeration members.
         uint16  member_count;
 
@@ -313,6 +340,13 @@ Range Type Descriptor
         // Whether the type is defined in the schema
         // or is ephemeral.
         bool    schema_defined;
+
+        // Number of ancestor scalar types.
+        uint16  ancestors_count;
+
+        // Indexes of ancestor scalar type descriptors
+        // in ancestor resolution order (C3).
+        uint16  ancestors[ancestors_count];
 
         // Range type descriptor index.
         uint16  type;
@@ -366,10 +400,10 @@ Compound Type Descriptor
         // Compound type operation, see TypeOperation below.
         uint8<TypeOperation>  op;
 
-        // Number of union type components.
+        // Number of compound type components.
         uint16                component_count;
 
-        // Union type component type descriptor indexes.
+        // Compound type component type descriptor indexes.
         uint16                components[component_count];
     };
 
